@@ -1,1 +1,39 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+common-venv/
+vectorstore/
+# Environment variables
 .env
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Chroma DB (if generated locally)
+chroma_db/
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+
+# Large datasets
+data/
+datasets/
+
+# OS files
+.DS_Store
+Thumbs.db
