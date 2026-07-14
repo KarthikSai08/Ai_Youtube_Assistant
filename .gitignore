@@ -1,39 +1,82 @@
-# Python bytecode
+# ── Secrets & Environment Variables ─────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python bytecode ─────────────────────────────────────────────
 __pycache__/
 *.py[cod]
+*$py.class
 
-# Virtual environments
+# ── Virtual environments ────────────────────────────────────────
 .venv/
 venv/
 env/
+ENV/
 common-venv/
-vectorstore/
-# Environment variables
-.env
+.conda/
+.python-version
 
-# VS Code
-.vscode/
-
-# Logs
-*.log
-
-# Build
+# ── Distribution / Packaging ────────────────────────────────────
 build/
 dist/
 *.egg-info/
+*.egg
+sdist/
+wheels/
 
-# Chroma DB (if generated locally)
-chroma_db/
+# ── pip ─────────────────────────────────────────────────────────
+pip-log.txt
+pip-delete-this-directory.txt
+pip-wheel-metadata/
 
-# Model checkpoints
+# ── Testing ─────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ── Type checking / Linting ─────────────────────────────────────
+.mypy_cache/
+.pytype/
+.pyre/
+.ruff_cache/
+
+# ── IDEs ────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Jupyter Notebooks ───────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── OS files ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ── Model checkpoints & large data ──────────────────────────────
 *.pt
 *.pth
 *.ckpt
-
-# Large datasets
+*.bin
 data/
 datasets/
+models/
 
-# OS files
-.DS_Store
-Thumbs.db
+# ── ChromaDB / Vector stores ────────────────────────────────────
+vectorstore/
+chroma_db/
+
+# ── Logs ────────────────────────────────────────────────────────
+*.log
+
+# ── Misc ────────────────────────────────────────────────────────
+.cache/
+*.bak
+*.tmp
