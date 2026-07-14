@@ -1,13 +1,12 @@
-import os
-from dotenv import load_dotenv
+
 # pyrefly: ignore [missing-import]
 from langchain_huggingface import HuggingFaceEmbeddings
 # pyrefly: ignore [missing-import]
 from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from config import VECTORSTORE_DIR, EMBEDDING_MODEL_NAME
-from client.youtube_utils import extract_video_id, fetch_transcript_text
+from youtube_assistant.config import VECTORSTORE_DIR, EMBEDDING_MODEL_NAME
+from youtube_assistant.client.youtube_utils import extract_video_id, fetch_transcript_text
 
 embedding_model = HuggingFaceEmbeddings(model_name = EMBEDDING_MODEL_NAME)
 

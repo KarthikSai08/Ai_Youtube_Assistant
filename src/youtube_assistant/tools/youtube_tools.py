@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from rag_pipeline import index_video, retrieve_context
+from youtube_assistant.rag_pipeline import index_video, retrieve_context
 
 _current_video = {"video_id" : None}
 
