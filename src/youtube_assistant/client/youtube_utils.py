@@ -30,16 +30,16 @@ def extract_video_id(url_or_id : str) -> str:
 
     raise ValueError(f"Could not extract a video Id From : {url_or_id}")
 
-def fetch_transcript_text(url_or_id: str) -> str:
+def _fetch_raw_transcript(video_id : id):
     """
-    Fetches the transcript for a video and returns it as One Flat string.
-    """
-
-    video_id = extract_video_id(url_or_id)
+    Shared fetch + error-handling logic used by both
+    fetch_transcript_text() and fetch_transcript_segments()
+    returns the raw FetchedTranscript object.
+    """    
     ytt_api = YouTubeTranscriptApi()
 
     try:
-        fetched = ytt_api.fetch(video_id, languages = ["en", "en-US", "en-GB"])
+        return ytt_api.fetch(video_id, languages = ["en", "en-US", "en-GB"])
     except TranscriptsDisabled:
         raise RuntimeError(f"Transcriptions are disabled for video {video_id}")
     except NoTranscriptFound:
@@ -53,10 +53,44 @@ def fetch_transcript_text(url_or_id: str) -> str:
             "wait for a bit and try , or try a different network"
         )
 
+def fetch_transcript_text(url_or_id: str) -> str:
+    """
+    Fetches the transcript for a video and returns it as One Flat string.
+    """
+
+    video_id = extract_video_id(url_or_id)
+    fetched = _fetch_raw_transcript(video_id)
     full_text = " ".join(snippet.text for snippet in fetched)
     return full_text
 
+def fetch_transcript_segments(url_or_id : str) -> list[dict]:
+    """
+    Fetches the Trancript Withpout Flattening timestamps away
+    return a list of {"text" : str, "start" : float} dicts, one
+    per captions snippet, in order. This is what powers timestamp search:
+    "when does the video mention X" needs to know WHERE in the video a
+    piece of text came from, which fetch_transcript_text() throws away
+    on purpose (it's the wrong tool for this job - see rag_pipeline.py'
+    docstring for thr same "match retrieval strategy to the task"
+    lesson applied here)
+    """
+    video_id = extract_video_id(url_or_id)
+    fetched = _fetch_raw_transcript(video_id)
+    return [{"text" : snippet.text, "start" : snippet.start} for snippet in fetched]
+
+def format_timestamp(seconds: float) -> str:
+    """
+    Formats a second count as MM:SS or HH:MM:SS 
+    """
+    total_seconds = int(seconds)
+    hours, remainder = divmod(total_seconds,3600)
+    minutes, secs = dict(remainder, 60)
+    if hours: 
+        return f"{hours}:{minutes:02d}:{secs:02d}"
+    return f"{minutes}:{secs:02d}" 
+
 if __name__ == "__main__":
+
     test_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     print("Extracted ID :",extract_video_id(test_url))
     try:
