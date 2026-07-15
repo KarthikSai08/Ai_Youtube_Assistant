@@ -1,16 +1,17 @@
 from pathlib import Path
 import sys
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+SRC_DIR = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(SRC_DIR))
+
 # pyrefly: ignore [missing-import]
 from fastmcp import FastMCP
-from rag_pipeline import index_video, retrieve_context
+from youtube_assistant.rag_pipeline import index_video, retrieve_context, get_full_transcript
+from youtube_assistant.rag_pipeline import find_timestamp as _rag_find_timestamp
 # pyrefly: ignore [missing-import]
-from client.youtube_utils import extract_video_id
+from youtube_assistant.client.youtube_utils import extract_video_id
 
 mcp = FastMCP("YouTube Learning Assistant MCP Server")
-
 _current_video = {"video_id": None}
 
 @mcp.tool()
@@ -48,6 +49,19 @@ def search_video_content(question: str) -> str:
         return "No video has been loaded yet. Ask the user for a Youtube URL and call load_youtube_video first"
     return retrieve_context(video_id, question, top_k = 3)
 
+@mcp.tool()
+def get_transcript_overview() -> str:
+    video_id = _current_video["video_id"]
+    if video_id is None:
+        return "No video has been loaded yet. Ask the user for a Youtube UTL and call load_youtube_video first."
+    return get_full_transcript(video_id)
+
+@mcp.tool()
+def find_timestamp(query: str) -> str:
+    video_id = _current_video["video_id"]
+    if video_id is None:
+        return "No video has been loaded yet. Ask the user for a YouTube URL and call load_youtube_video first"
+    return _rag_find_timestamp(video_id, query, top_k = 3)
 
 @mcp.tool()
 def get_video_id(video_url: str) -> str:
